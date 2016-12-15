@@ -16,6 +16,8 @@
 
 package io.spring.initializr.actuate.metric
 
+import static org.junit.Assert.assertTrue
+
 import io.spring.initializr.actuate.test.RedisRunning
 import io.spring.initializr.generator.ProjectGeneratedEvent
 import io.spring.initializr.generator.ProjectRequest
@@ -27,7 +29,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.actuate.metrics.repository.redis.RedisMetricRepository
@@ -38,53 +39,51 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
 import org.springframework.test.context.junit4.SpringRunner
 
-import static org.junit.Assert.assertTrue
-
 /**
  * @author Dave Syer
  */
 @RunWith(SpringRunner)
-@SpringBootTest(classes = Config, properties = ['spring.metrics.export.delayMillis:500',
-		'spring.metrics.export.enabled:true',
-		'initializr.metrics.prefix:test.prefix', 'initializr.metrics.key:key.test'])
+@SpringBootTest(classes = Config.class, properties = ['spring.metrics.export.delayMillis:500',
+  'spring.metrics.export.enabled:true',
+  'initializr.metrics.prefix:test.prefix', 'initializr.metrics.key:key.test'])
 class MetricsExportTests {
 
-	@Rule
-	public RedisRunning running = new RedisRunning()
+  @Rule
+  public RedisRunning running = new RedisRunning()
 
-	@Autowired
-	ProjectGenerationMetricsListener listener
+  @Autowired
+  ProjectGenerationMetricsListener listener
 
-	@Autowired
-	@Qualifier("writer")
-	MetricWriter writer
+  @Autowired
+  @Qualifier("writer")
+  MetricWriter writer
 
-	RedisMetricRepository repository
+  RedisMetricRepository repository
 
-	@Before
-	void init() {
-		repository = (RedisMetricRepository) writer
-		repository.findAll().each {
-			repository.reset(it.name)
-		}
-		assertTrue("Metrics not empty", repository.findAll().size() == 0)
-	}
+  @Before
+  void init() {
+    repository = (RedisMetricRepository) writer
+    repository.findAll().each {
+      repository.reset(it.name)
+    }
+    assertTrue("Metrics not empty", repository.findAll().size() == 0)
+  }
 
-	@Test
-	void exportAndCheckMetricsExist() {
-		listener.onGeneratedProject(new ProjectGeneratedEvent(new ProjectRequest()))
-		Thread.sleep(1000L)
-		assertTrue("No metrics exported", repository.findAll().size() > 0)
-	}
+  @Test
+  void exportAndCheckMetricsExist() {
+    listener.onGeneratedProject(new ProjectGeneratedEvent(new ProjectRequest()))
+    Thread.sleep(1000L)
+    assertTrue("No metrics exported", repository.findAll().size() > 0)
+  }
 
-	@EnableAutoConfiguration
-	@EnableConfigurationProperties(InitializrProperties)
-	static class Config {
+  @EnableAutoConfiguration
+  @EnableConfigurationProperties(InitializrProperties)
+  static class Config {
 
-		@Bean
-		InitializrMetadataProvider initializrMetadataProvider(InitializrProperties properties) {
-			def metadata = InitializrMetadataBuilder.fromInitializrProperties(properties).build()
-			new SimpleInitializrMetadataProvider(metadata)
-		}
-	}
+    @Bean
+    InitializrMetadataProvider initializrMetadataProvider(InitializrProperties properties) {
+      def metadata = InitializrMetadataBuilder.fromInitializrProperties(properties).build()
+      new SimpleInitializrMetadataProvider(metadata)
+    }
+  }
 }

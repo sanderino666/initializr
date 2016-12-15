@@ -16,12 +16,9 @@
 
 package io.spring.initializr.service
 
-import java.util.concurrent.Executor
-
 import io.spring.initializr.metadata.InitializrMetadataProvider
 import io.spring.initializr.util.GroovyTemplate
 import io.spring.initializr.web.project.LegacyStsController
-
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
@@ -30,6 +27,8 @@ import org.springframework.scheduling.annotation.AsyncConfigurerSupport
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.web.servlet.resource.ResourceUrlProvider
+
+import java.util.concurrent.Executor
 
 /**
  * Initializr service application. Enables legacy STS support for older
@@ -41,32 +40,29 @@ import org.springframework.web.servlet.resource.ResourceUrlProvider
 @SpringBootApplication
 class InitializrService {
 
-	public static void main(String[] args) {
-		SpringApplication.run(InitializrService, args)
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(InitializrService, args)
+  }
 
-	@Bean
-	@SuppressWarnings("deprecation")
-	LegacyStsController legacyStsController(InitializrMetadataProvider metadataProvider,
-											ResourceUrlProvider resourceUrlProvider,
-											GroovyTemplate groovyTemplate) {
-		new LegacyStsController(metadataProvider, resourceUrlProvider, groovyTemplate)
-	}
+  @Bean
+  LegacyStsController legacyStsController(InitializrMetadataProvider metadataProvider,
+      ResourceUrlProvider resourceUrlProvider,
+      GroovyTemplate groovyTemplate) {
+    new LegacyStsController(metadataProvider, resourceUrlProvider, groovyTemplate)
+  }
 
-	@Configuration
-	@EnableAsync
-	static class AsyncConfiguration extends AsyncConfigurerSupport {
+  @Configuration
+  @EnableAsync
+  static class AsyncConfiguration extends AsyncConfigurerSupport {
 
-		@Override
-		Executor getAsyncExecutor() {
-			ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor()
-			executor.setCorePoolSize(1)
-			executor.setMaxPoolSize(5)
-			executor.setThreadNamePrefix("initializr-")
-			executor.initialize()
-			executor
-		}
-
-	}
-
+    @Override
+    Executor getAsyncExecutor() {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor()
+      executor.setCorePoolSize(1)
+      executor.setMaxPoolSize(5)
+      executor.setThreadNamePrefix("initializr-")
+      executor.initialize()
+      executor
+    }
+  }
 }

@@ -18,7 +18,6 @@ package io.spring.initializr.web.project
 
 import io.spring.initializr.metadata.InitializrMetadataProvider
 import io.spring.initializr.util.GroovyTemplate
-
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
@@ -31,18 +30,16 @@ import org.springframework.web.servlet.resource.ResourceUrlProvider
  * @since 1.0
  */
 @Controller
-@Deprecated
 class LegacyStsController extends AbstractInitializrController {
 
-	LegacyStsController(InitializrMetadataProvider metadataProvider, ResourceUrlProvider resourceUrlProvider,
-						GroovyTemplate groovyTemplate) {
-		super(metadataProvider, resourceUrlProvider, groovyTemplate)
-	}
+  LegacyStsController(InitializrMetadataProvider metadataProvider, ResourceUrlProvider resourceUrlProvider,
+  GroovyTemplate groovyTemplate) {
+    super(metadataProvider, resourceUrlProvider, groovyTemplate)
+  }
 
-	@RequestMapping(value = '/sts', produces = 'text/html')
-	@ResponseBody
-	String stsHome() {
-		renderHome('sts-home.html')
-	}
-
+  @RequestMapping(value = '/sts', produces = 'text/html')
+  @ResponseBody
+  String stsHome() {
+    renderHome('sts-home.html')
+  }
 }
