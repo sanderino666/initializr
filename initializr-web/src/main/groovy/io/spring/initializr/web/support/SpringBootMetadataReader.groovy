@@ -31,13 +31,47 @@ import org.springframework.web.client.RestTemplate
  */
 class SpringBootMetadataReader {
 
-	private final def content
+	private final def content = """{
+  "id": "Blueriq-initializer",
+  "name": "Blueriq initializer",
+  "repoUrl": "https://github.com/spring-projects/spring-boot",
+  "siteUrl": "http://projects.spring.io/spring-boot",
+  "category": "active",
+  "stackOverflowTags": "Blueriq-initializer",
+  "projectReleases": [
+    {
+      "releaseStatus": "SNAPSHOT",
+      "refDocUrl": "http://docs.spring.io/spring-boot/docs/2.0.0.BUILD-SNAPSHOT/reference/htmlsingle/",
+      "apiDocUrl": "http://docs.spring.io/spring-boot/docs/2.0.0.BUILD-SNAPSHOT/api/",
+      "groupId": "com.Blueriq",
+      "artifactId": "blueriq-initializer",
+      "repository": {
+        "id": "spring-snapshots",
+        "name": "Spring Snapshots",
+        "url": "https://repo.spring.io/libs-snapshot",
+        "snapshotsEnabled": true
+      },
+      "generalAvailability": false,
+      "preRelease": false,
+      "versionDisplayName": "10.0.0",
+      "current": false,
+      "snapshot": true,
+      "version": "10.0.0.SNAPSHOT"
+    }
+  ],
+  "aggregator": false,
+  "stackOverflowTagList": [
+    "spring-boot"
+  ]
+}
+"""
 
 	/**
 	 * Parse the content of the metadata at the specified url
 	 */
 	SpringBootMetadataReader(RestTemplate restTemplate, String url) {
-		def content = restTemplate.getForObject(url, String.class)
+		//def content = restTemplate.getForObject(url, String.class)
+		//FIXME: RdH: getting the json from url instead of constant
 		this.content = new JsonSlurper().parseText(content)
 	}
 
